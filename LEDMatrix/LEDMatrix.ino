@@ -33,57 +33,23 @@ int pinA0;
 void loop() {
   String result;
   IoTtalk.loop();
-    // if (millis() - cycleTimestamp > 200) {
-    //
-    //     pinA0 = analogRead(A0);
-    //     push("A0", String(pinA0));
-    //
-        result = IoTtalk.pull("D0~");
-        if (result != "___NULL_DATA___"){
-            Serial.println ("D0~: "+result);
-            if (result.toInt() >= 0 && result.toInt() <= 255) analogWrite(16, result.toInt());
-        }
+  if (millis() - cycleTimestamp > 200) {
+    result = IoTtalk.pull("D0~");
+    if (result != "___NULL_DATA___"){
+        Serial.println ("D0~: "+result);
+        if (result.toInt() >= 0 && result.toInt() <= 255) analogWrite(16, result.toInt());
+    }
 
-        result = IoTtalk.pull("D1~");
-        if (result != "___NULL_DATA___"){
-            Serial.println ("D1~: "+result);
-            if (result.toInt() >= 0 && result.toInt() <= 255) analogWrite(5, result.toInt());
-        }
+    result = IoTtalk.pull("D1~");
+    if (result != "___NULL_DATA___"){
+        Serial.println ("D1~: "+result);
+        if (result.toInt() >= 0 && result.toInt() <= 255) analogWrite(5, result.toInt());
+    }
 
-        result = IoTtalk.pull("D2~");
-        if (result != "___NULL_DATA___"){
-            Serial.println ("D2~: "+result);
-            if (result.toInt() >= 0 && result.toInt() <= 255) analogWrite(4, result.toInt());
-        }
-    //
-    //     result = pull("D5");
-    //     if (result != "___NULL_DATA___"){
-    //         Serial.println ("D5: "+result);
-    //         if (result.toInt() > 0 ) digitalWrite(14, 1);
-    //         else digitalWrite(14, 0);
-    //     }
-    //
-    //     result = pull("D6");
-    //     if (result != "___NULL_DATA___"){
-    //         Serial.println ("D6: "+result);
-    //         if (result.toInt() > 0 ) digitalWrite(12, 1);
-    //         else digitalWrite(12, 0);
-    //     }
-    //
-    //     result = pull("D7");
-    //     if (result != "___NULL_DATA___"){
-    //         Serial.println ("D7: "+result);
-    //         if (result.toInt() > 0 ) digitalWrite(13, 1);
-    //         else digitalWrite(13, 0);
-    //     }
-    //
-    //     result = pull("D8");
-    //     if (result != "___NULL_DATA___"){
-    //         Serial.println ("D8: "+result);
-    //         if (result.toInt() > 0 ) digitalWrite(15, 1);
-    //         else digitalWrite(15, 0);
-    //     }
-    //     cycleTimestamp = millis();
-    // }
-
+    result = IoTtalk.pull("D2~");
+    if (result != "___NULL_DATA___"){
+        Serial.println ("D2~: "+result);
+        if (result.toInt() >= 0 && result.toInt() <= 255) analogWrite(4, result.toInt());
+    }
+  }
 }

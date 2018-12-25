@@ -316,7 +316,7 @@ String IoTtalkDevice::pull(char *df_name){
     String get_ret_str = http.getString();  //After send GET request , store the return string
 //    Serial.println
 
-    Serial.println("output "+String(df_name)+": \n"+get_ret_str);
+    // Serial.println("output "+String(df_name)+": \n"+get_ret_str);
     http.end();
 
     get_ret_str = removeWhiteSpace(get_ret_str);
