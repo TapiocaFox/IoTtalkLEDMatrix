@@ -1,5 +1,5 @@
-#ifndef IoTtalll_H_
-#define IoTtalll_H_
+#ifndef IoTtalkDevice_H_
+#define IoTtalkDevice_H_
 #define MaxDFSize 10
 
 #include "ESP8266HTTPClient2.h"
@@ -48,4 +48,4 @@ class IoTtalkDevice {
     int returnDFindex(char *df_name);
 };
 
-#endif /* IoTtalll_H_ */
+#endif /* IoTtalkDevice_H_ */
