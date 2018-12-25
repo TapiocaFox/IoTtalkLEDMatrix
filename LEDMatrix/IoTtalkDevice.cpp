@@ -199,7 +199,7 @@ void setupWifiandIoTtalk(void){
     WiFi.macAddress(MAC_array);
     for (int i=0;i<6;i++){
         if( MAC_array[i]<0x10 ) softapname+="0";
-        softapname+= String(MAC_array[i],HEX);      //Append the mac address to url string
+        softapname+= String(MAC_array[i],HEX);      //Append the mac address to DeviceURL string
     }
 
     IPAddress ip(192,168,0,1);
@@ -214,7 +214,7 @@ void setupWifiandIoTtalk(void){
 }
 
 int IoTtalkDevice::registerIoTtalk(void){
-    String url = "http://" + String(IoTtalkServerIP) + ":9999/";
+    DeviceURL = "http://" + String(IoTtalkServerIP) + ":9999/";
 
     String *df_list = DF_list;
 
@@ -229,12 +229,12 @@ int IoTtalkDevice::registerIoTtalk(void){
     uint8_t MAC_array[6];
     WiFi.macAddress(MAC_array);//get esp12f mac address
     for (int i=0;i<6;i++){
-        if( MAC_array[i]<0x10 ) url+="0";
-        url+= String(MAC_array[i],HEX);      //Append the mac address to url string
+        if( MAC_array[i]<0x10 ) DeviceURL+="0";
+        DeviceURL+= String(MAC_array[i],HEX);      //Append the mac address to DeviceURL string
     }
 
     //send the register packet
-    Serial.println("[HTTP] POST..." + url);
+    Serial.println("[HTTP] POST..." + DeviceURL);
     String profile="{\"profile\": {\"d_name\": \"";
     //profile += "MCU.";
     DeviceName = "";
@@ -242,7 +242,7 @@ int IoTtalkDevice::registerIoTtalk(void){
         // if( MAC_array[i]<0x10 ) profile+="0";
         DeviceName += String(MAC_array[i],HEX);
     }
-    DeviceName = DM_name+DeviceName;
+    DeviceName = DeviceName+DM_name;
     profile += DeviceName;
     profile += "\", \"dm_name\": \"";
     profile += DM_name;
@@ -250,7 +250,7 @@ int IoTtalkDevice::registerIoTtalk(void){
     profile +=  dflist_string;
     profile += "]}}";
 
-    http.begin(url);
+    http.begin(DeviceURL);
     http.addHeader("Content-Type","application/json");
     // Serial.println(profile);
     int httpCode = http.POST(profile);
@@ -258,7 +258,7 @@ int IoTtalkDevice::registerIoTtalk(void){
     Serial.println("[HTTP] Register... code: " + (String)httpCode );
     Serial.println(http.getString());
     //http.end();
-    url +="/";
+    DeviceURL +="/";
     return httpCode;
 }
 
@@ -276,9 +276,8 @@ int IoTtalkDevice::returnDFindex(char *df_name){
 }
 
 int IoTtalkDevice::push(char *df_name, String value){
-    String url = "http://" + String(IoTtalkServerIP) + ":9999/"+DeviceName+"/";
 
-    http.begin( url + String(df_name));
+    http.begin( DeviceURL + String(df_name));
     http.addHeader("Content-Type","application/json");
     String data = "{\"data\":[" + value + "]}";
     int httpCode = http.PUT(data);
@@ -298,13 +297,12 @@ int IoTtalkDevice::push(char *df_name, String value){
 }
 
 String IoTtalkDevice::pull(char *df_name){
-    String url = "http://" + String(IoTtalkServerIP) + ":9999/"+DeviceName+"/";
 
-    http.begin( url + String(df_name) );
+    http.begin( DeviceURL + String(df_name) );
     http.addHeader("Content-Type","application/json");
     int httpCode = http.GET(); //http state code
 
-    if (httpCode != 200) Serial.println("[HTTP] "+url + String(df_name)+" PULL \"" + String(df_name) + "\"... code: " + (String)httpCode + ", retry to register.");
+    if (httpCode != 200) Serial.println("[HTTP] "+DeviceURL + String(df_name)+" PULL \"" + String(df_name) + "\"... code: " + (String)httpCode + ", retry to register.");
     while (httpCode != 200){
         digitalWrite(4, LOW);
         digitalWrite(2, HIGH);

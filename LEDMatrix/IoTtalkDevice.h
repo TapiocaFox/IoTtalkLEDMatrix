@@ -28,6 +28,7 @@ class IoTtalkDevice {
     long LEDflashCycle = millis();
     long LEDonCycle = millis();
     int LEDhadFlashed = 0;
+    String DeviceURL;
 
     String removeWhiteSpace(const String& str );
     // void clearEEPROM(int sw=0);
