@@ -14,6 +14,7 @@ uint8_t isInWiFiMode = 1;
 // }
 ESP8266WebServer HttpServer;
 void setupWifiandIoTtalk();
+
 void IoTtalkDevice::setDeviceModelName(const String& str) {
   DM_name = str;
 }
@@ -236,10 +237,13 @@ int IoTtalkDevice::registerIoTtalk(void){
     Serial.println("[HTTP] POST..." + url);
     String profile="{\"profile\": {\"d_name\": \"";
     //profile += "MCU.";
+    DeviceName = "";
     for (int i=3;i<6;i++){
-        if( MAC_array[i]<0x10 ) profile+="0";
-        profile += String(MAC_array[i],HEX);
+        // if( MAC_array[i]<0x10 ) profile+="0";
+        DeviceName += String(MAC_array[i],HEX);
     }
+    DeviceName = DM_name+DeviceName;
+    profile += DeviceName;
     profile += "\", \"dm_name\": \"";
     profile += DM_name;
     profile += "\", \"is_sim\": false, \"df_list\": [";
@@ -272,7 +276,7 @@ int IoTtalkDevice::returnDFindex(char *df_name){
 }
 
 int IoTtalkDevice::push(char *df_name, String value){
-    String url = "http://" + String(IoTtalkServerIP) + ":9999/"+DM_name+"/";
+    String url = "http://" + String(IoTtalkServerIP) + ":9999/"+DeviceName+"/";
 
     http.begin( url + String(df_name));
     http.addHeader("Content-Type","application/json");
@@ -294,7 +298,7 @@ int IoTtalkDevice::push(char *df_name, String value){
 }
 
 String IoTtalkDevice::pull(char *df_name){
-    String url = "http://" + String(IoTtalkServerIP) + ":9999/"+DM_name+"/";
+    String url = "http://" + String(IoTtalkServerIP) + ":9999/"+DeviceName+"/";
 
     http.begin( url + String(df_name) );
     http.addHeader("Content-Type","application/json");

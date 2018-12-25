@@ -22,6 +22,7 @@ class IoTtalkDevice {
     String DM_name;
     String DF_list[MaxDFSize];
     String DF_timestamp[MaxDFSize];
+    String DeviceName;
     HTTPClient http;
      //1:AP , 0: STA
     long LEDflashCycle = millis();
