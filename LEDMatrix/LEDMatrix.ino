@@ -4,39 +4,49 @@
 #include "Regexp.h"
 #include "RegexKeyFunctionMap.h"
 
-namespace std {
-
-void __throw_bad_cast(void)
-{
-    // print error and stop execution
-}
-void __throw_ios_failure(char const*){}
-void __throw_runtime_error(char const*){}
-
-
-} // namespace std
-
 long cycleTimestamp = millis();
 RegexKeyFunctionMap Router;
 IoTtalkDevice IoTtalk;
-
-std::string ArduinoStringTostdString(String str) {
-  std::string result = "";
-  for( char c : str ) result += c ;
-  return result;
-}
-
-String StdStringToArduinoString(std::string str) {
-  String result = "";
-  for( char c : str ) result += c ;
-  return result;
-}
 
 void usblog(String str) {
   Serial.println(str);
 }
 
 void setup() {
+    Serial.begin(115200);
+
+    /// 大家要在這裡完成各種功能！！！
+    /// *************** setup command here!!!! ***************
+    // exaple:
+    // Router.map(正則表達式, [](std::vector<std::string> matches) {
+    //   matches[0]; //  整格字串
+    //   matches[1]; // 第一組 re group
+    //   matches[2]; // 第二組 re group, and so on
+    // });
+
+    // !bounce "This Text Should be bouncing"
+    Router.map("^[!](bounce|bouncetext)[ ](.*)$", [](std::vector<String> matches) {
+      // c_str for Arduino string compatability
+      usblog("Bouncing text: "+matches[2]);
+      // return 0;
+    });
+
+    Router.map("^[^!](.*)$", [](std::vector<String> matches) {
+      usblog("Plain text: "+matches[0]);
+      // return 0;
+    });
+
+    Router.map("^(.*)[.](.*)$", [](std::vector<String> matches) {
+      usblog("Dot text(full): "+matches[0]);
+      usblog("Dot text(int): "+matches[1]);
+      usblog("Dot text(float): "+matches[2]);
+
+      // return 0;
+    });
+
+    /// *************** setup command end ********************
+
+
     String DFs[] = {"LEDMatrixOutput"};
     IoTtalk.setDeviceModelName("LEDMatrix");
     IoTtalk.setDeviceFeatures(DFs, 1);
@@ -52,39 +62,6 @@ void setup() {
     pinMode(12, OUTPUT);// D6
     pinMode(13, OUTPUT);// D7
     pinMode(15, OUTPUT);// D8
-
-    Serial.begin(115200);
-
-    /// 大家要在這裡完成各種功能！！！
-    /// *************** setup command here!!!! ***************
-    // exaple:
-    // Router.map(正則表達式, [](std::vector<std::string> matches) {
-    //   matches[0]; //  整格字串
-    //   matches[1]; // 第一組 re group
-    //   matches[2]; // 第二組 re group, and so on
-    // });
-
-    // !bounce "This Text Should be bouncing"
-    Router.map("^[!](bounce|bouncetext)[ ](.*)$", [](std::vector<std::string> matches) {
-      // c_str for Arduino string compatability
-      usblog("Bouncing text: "+StdStringToArduinoString(matches[2]));
-      // return 0;
-    });
-
-    Router.map("^[^!](.*)$", [](std::vector<std::string> matches) {
-      usblog("Plain text: "+StdStringToArduinoString(matches[0]));
-      // return 0;
-    });
-
-    Router.map("^(.*)[.](.*)$", [](std::vector<std::string> matches) {
-      usblog("Dot text(full): "+StdStringToArduinoString(matches[0]));
-      usblog("Dot text(int): "+StdStringToArduinoString(matches[1]));
-      usblog("Dot text(float): "+StdStringToArduinoString(matches[2]));
-
-      // return 0;
-    });
-
-    /// *************** setup command end ********************
 
     IoTtalk.initialize();
 
@@ -104,7 +81,7 @@ void loop() {
     result = IoTtalk.pull("LEDMatrixOutput");
     if (result != "___NULL_DATA___"){
         Serial.println ("LEDMatrixOutput: "+result);
-        Router.exec(ArduinoStringTostdString(result));
+        Router.exec(result);
     }
   }
 }

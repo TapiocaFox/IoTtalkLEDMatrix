@@ -4,7 +4,20 @@
 
 VoidFuncPointer operating_function;
 
-void RegexKeyFunctionMap::exec(std::string plain) {
+std::string ArduinoStringTostdString(String str) {
+  std::string result = "";
+  for( char c : str ) result += c ;
+  return result;
+}
+
+String StdStringToArduinoString(std::string str) {
+  String result = "";
+  for( char c : str ) result += c ;
+  return result;
+}
+
+void RegexKeyFunctionMap::exec(String plain) {
+
   // std::regex match_regex("(Some)(.*)");
   // if(std::regex_match(s, match_regex)) {
   //     std::cout << "matched!";
@@ -18,13 +31,13 @@ void RegexKeyFunctionMap::exec(std::string plain) {
     int count = ms.GlobalMatch ((it->first).c_str(), [](const char * match,          // matching string (not null-terminated)
       const unsigned int length,   // length of matching string
       const MatchState & ms) {
-        std::vector<std::string> result_vector;
-        result_vector.push_back(std::string(ms.src));
+        std::vector<String> result_vector;
+        result_vector.push_back(String(ms.src));
         char cap [128];
         for (int i = 0; i < ms.level; i++)
          {
            ms.GetCapture (cap, i);
-           result_vector.push_back(std::string(cap));
+           result_vector.push_back(String(cap));
          }  // end of for each capture
          operating_function(result_vector);
     });
@@ -37,6 +50,6 @@ void RegexKeyFunctionMap::exec(std::string plain) {
   };
 };
 
-void RegexKeyFunctionMap::map(std::string re, VoidFuncPointer f) {
+void RegexKeyFunctionMap::map(String re, VoidFuncPointer f) {
   regexmap[re] = f;
 };
