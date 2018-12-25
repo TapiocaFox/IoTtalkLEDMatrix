@@ -17,7 +17,7 @@ void __throw_runtime_error(char const*){}
 } // namespace std
 
 long cycleTimestamp = millis();
-RegexKeyFunctionMap StringRouter;
+RegexKeyFunctionMap Router;
 IoTtalkDevice IoTtalk;
 
 std::string ArduinoStringTostdString(String str) {
@@ -57,20 +57,26 @@ void setup() {
 
     /// 大家要在這裡完成各種功能！！！
     /// *************** setup command here!!!! ***************
+    // exaple:
+    // Router.map(正則表達式, [](std::vector<std::string> matches) {
+    //   matches[0]; //  整格字串
+    //   matches[1]; // 第一組 re group
+    //   matches[2]; // 第二組 re group, and so on
+    // });
 
     // !bounce "This Text Should be bouncing"
-    StringRouter.map("^[!](bounce|bouncetext)[ ](.*)$", [](std::vector<std::string> matches) {
+    Router.map("^[!](bounce|bouncetext)[ ](.*)$", [](std::vector<std::string> matches) {
       // c_str for Arduino string compatability
       usblog("Bouncing text: "+StdStringToArduinoString(matches[2]));
       // return 0;
     });
 
-    StringRouter.map("^[^!](.*)$", [](std::vector<std::string> matches) {
+    Router.map("^[^!](.*)$", [](std::vector<std::string> matches) {
       usblog("Plain text: "+StdStringToArduinoString(matches[0]));
       // return 0;
     });
 
-    StringRouter.map("^(.*)[.](.*)$", [](std::vector<std::string> matches) {
+    Router.map("^(.*)[.](.*)$", [](std::vector<std::string> matches) {
       usblog("Dot text(full): "+StdStringToArduinoString(matches[0]));
       usblog("Dot text(int): "+StdStringToArduinoString(matches[1]));
       usblog("Dot text(float): "+StdStringToArduinoString(matches[2]));
@@ -98,7 +104,7 @@ void loop() {
     result = IoTtalk.pull("LEDMatrixOutput");
     if (result != "___NULL_DATA___"){
         Serial.println ("LEDMatrixOutput: "+result);
-        StringRouter.exec(ArduinoStringTostdString(result));
+        Router.exec(ArduinoStringTostdString(result));
     }
   }
 }
