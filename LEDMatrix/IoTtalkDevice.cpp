@@ -2,7 +2,7 @@
 #include <ESP8266WiFiMulti.h>
 #include <EEPROM.h>
 #include <ESP8266WebServer.h>
-
+#include <Arduino.h>
 #include "IoTtalkDevice.h"
 #define DefaultIoTtalkServerIP "140.113.199.189"
 int n_of_DF;
