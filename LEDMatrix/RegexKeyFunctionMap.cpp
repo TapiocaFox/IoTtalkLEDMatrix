@@ -2,7 +2,7 @@
 #include "Regexp.h"
 #include <vector>
 
-VoidFuncPointer operating_function;
+std::function<void(std::vector<String>)> operating_function;
 
 std::string ArduinoStringTostdString(String str) {
   std::string result = "";
@@ -28,6 +28,7 @@ void RegexKeyFunctionMap::exec(String plain) {
   MatchState ms (buff);
   for(auto it=regexmap.begin(); it!=regexmap.end(); it++) {
     operating_function = it->second;
+    // Serial.println (plain+' '+it->first);
     int count = ms.GlobalMatch ((it->first).c_str(), [](const char * match,          // matching string (not null-terminated)
       const unsigned int length,   // length of matching string
       const MatchState & ms) {
@@ -50,6 +51,6 @@ void RegexKeyFunctionMap::exec(String plain) {
   };
 };
 
-void RegexKeyFunctionMap::map(String re, VoidFuncPointer f) {
+void RegexKeyFunctionMap::map(String re, std::function<void(std::vector<String>)> f) {
   regexmap[re] = f;
 };

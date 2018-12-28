@@ -1,11 +1,13 @@
 #include "LEDMatrixCommands.h"
-#include "LEDMatrix.h"
+
+int loopMode = 0;
+// 0 scrollTextLeft;
 
 void usblog(String str) {
   Serial.println(str);
 }
 
-void setupCommandRouter(RegexKeyFunctionMap &Router) {
+void setupCommandRouter(RegexKeyFunctionMap &Router, LedMatrix &ledMatrix) {
 
     /// 大家要在這裡完成各種功能！！！
     /// *************** setup command here!!!! ***************
@@ -23,9 +25,9 @@ void setupCommandRouter(RegexKeyFunctionMap &Router) {
       // return 0;
     });
 
-    Router.map("^[^!](.*)$", [](std::vector<String> matches) {
+    Router.map("^[^!](.*)$", [&ledMatrix](std::vector<String> matches) {
       usblog("Plain text: "+matches[0]);
-      // return 0;
+      ledMatrix.setText(matches[0]);
     });
 
     Router.map("^(.*)[.](.*)$", [](std::vector<String> matches) {
@@ -37,4 +39,15 @@ void setupCommandRouter(RegexKeyFunctionMap &Router) {
     });
 
     /// *************** setup command end ********************
+}
+
+void loopLED(long cycleTimestamp, LedMatrix &ledMatrix) {
+  if(loopMode == 0) {
+    if (millis() - cycleTimestamp > 200) {
+        ledMatrix.clear();
+        ledMatrix.scrollTextLeft();
+        ledMatrix.drawText();
+        ledMatrix.commit(); // commit transfers the byte buffer to the displays
+    };
+  }
 }
