@@ -1,9 +1,9 @@
 #include "LEDMatrixCommands.h"
 #include <Arduino.h>
 
-int loopMode = 0;
+int loopMode = 1;
 long LEDcycleTimestamp = millis();
-int LEDInterval = 500;
+int LEDInterval = 100;
 // 0 scrollTextLeft;
 // 1 scrollTextRight;
 
@@ -23,15 +23,37 @@ void setupCommandRouter(RegexKeyFunctionMap &Router, LedMatrix &ledMatrix) {
     // });
 
     // !bounce "This Text Should be bouncing"
-    Router.map("^!mode[ ](.*)$", [](std::vector<String> matches) {
+    Router.map("^!mode[ ](.*)$", [&ledMatrix](std::vector<String> matches) {
       // c_str for Arduino string compatability
       usblog("mode set: "+matches[1]);
      if(matches[1]=="normal"||matches[1]=="scrollTextLeft"||matches[1]=="scrollLeft") {
-       loopMode =0;
+       ledMatrix.setTextAlignment(1);
+       loopMode =1;
      }
      else if(matches[1]=="scrollTextRight"||matches[1]=="scrollRight") {
-       loopMode=1;
+       ledMatrix.setTextAlignment(3);
+       loopMode=2;
      }
+     else if(matches[1]=="stillRight"||matches[1]=="right"||matches[1]=="Right") {
+       ledMatrix.setTextAlignment(3);
+       loopMode=0;
+     }
+     else if(matches[1]=="stillLeft"||matches[1]=="left"||matches[1]=="Left") {
+       ledMatrix.setTextAlignment(1);
+       loopMode=0;
+     }
+     else if(matches[1]=="oscillate"||matches[1]=="vibrate"||matches[1]=="shake") {
+       ledMatrix.setTextAlignment(1);
+       loopMode=3;
+     }
+      // return 0;
+    });
+
+    // !bounce "This Text Should be bouncing"
+    Router.map("^!intensity[ ](.*)$", [&ledMatrix](std::vector<String> matches) {
+      // c_str for Arduino string compatability
+      usblog("intensity set: "+matches[1]);
+      ledMatrix.setIntensity(matches[1].toInt());
       // return 0;
     });
 
@@ -42,9 +64,21 @@ void setupCommandRouter(RegexKeyFunctionMap &Router, LedMatrix &ledMatrix) {
       // return 0;
     });
 
+    Router.map("^!charWidth (.*)$", [&ledMatrix](std::vector<String> matches) {
+      // c_str for Arduino string compatability
+      usblog("charWidth set: "+matches[1]);
+      ledMatrix.setCharWidth(matches[1].toInt());
+      // return 0;
+    });
+
     Router.map("^[^!](.*)$", [&ledMatrix](std::vector<String> matches) {
       usblog("Plain text: "+matches[0]);
       ledMatrix.setText(matches[0]);
+    });
+
+    Router.map("^!text (.*)$", [&ledMatrix](std::vector<String> matches) {
+      usblog("set text: "+matches[1]);
+      ledMatrix.setText(matches[1]);
     });
 
     // Router.map("^(.*)[.](.*)$", [](std::vector<String> matches) {
@@ -59,7 +93,7 @@ void setupCommandRouter(RegexKeyFunctionMap &Router, LedMatrix &ledMatrix) {
 }
 
 void loopLED(LedMatrix &ledMatrix) {
-  if(loopMode == 0) {
+  if(loopMode == 1) {
     if (millis() - LEDcycleTimestamp > LEDInterval) {
         ledMatrix.clear();
         ledMatrix.scrollTextLeft();
@@ -69,10 +103,20 @@ void loopLED(LedMatrix &ledMatrix) {
 
     };
   }
-  else if(loopMode == 1) {
+  else if(loopMode == 2) {
     if (millis() - LEDcycleTimestamp > LEDInterval) {
         ledMatrix.clear();
         ledMatrix.scrollTextRight();
+        ledMatrix.drawText();
+        ledMatrix.commit(); // commit transfers the byte buffer to the displays
+        LEDcycleTimestamp = millis();
+
+    };
+  }
+  else if(loopMode == 3) {
+    if (millis() - LEDcycleTimestamp > LEDInterval) {
+        ledMatrix.clear();
+        ledMatrix.oscillateText();
         ledMatrix.drawText();
         ledMatrix.commit(); // commit transfers the byte buffer to the displays
         LEDcycleTimestamp = millis();

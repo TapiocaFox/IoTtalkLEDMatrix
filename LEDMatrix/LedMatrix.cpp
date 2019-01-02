@@ -113,7 +113,12 @@ void LedMatrix::setNextText(String nextText) {
 }
 
 void LedMatrix::scrollTextRight() {
-    myTextOffset = (myTextOffset + 1) % ((int)myText.length() * myCharWidth - 5);
+    myTextOffset = (myTextOffset + 1) % ((int)myText.length() * myCharWidth + myNumberOfDevices * 8);
+    if (myTextOffset == myText.length() * myCharWidth - myNumberOfDevices * 8 && myNextText.length() > 0) {
+        myText = myNextText;
+        myNextText = "";
+        calculateTextAlignmentOffset();
+    }
 }
 
 void LedMatrix::scrollTextLeft() {
