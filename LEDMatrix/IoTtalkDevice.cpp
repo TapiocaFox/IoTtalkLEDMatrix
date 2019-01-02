@@ -365,6 +365,7 @@ String IoTtalkDevice::pull(char *df_name){
 void IoTtalkDevice::initialize() {
     EEPROM.begin(512);
     Serial.begin(115200);
+    pinMode(2, OUTPUT);
 
     char wifissid[100]="";
     char wifipass[100]="";

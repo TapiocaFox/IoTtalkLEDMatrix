@@ -6,7 +6,7 @@
 #include "LEDMatrixCommands.h"
 
 #define NUMBER_OF_DEVICES 4
-#define CS_PIN 2
+#define CS_PIN 0
 LedMatrix ledMatrix = LedMatrix(NUMBER_OF_DEVICES, CS_PIN);
 
 long cycleTimestamp = millis();
@@ -18,7 +18,7 @@ void setup() {
 
     ledMatrix.init();
     ledMatrix.setIntensity(4); // range is 0-15
-    ledMatrix.setText("MAX7219");
+    ledMatrix.setText("MAX7219 LEDMatrix");
     setupCommandRouter(Router, ledMatrix);
 
     String DFs[] = {"LEDMatrixOutput"};
@@ -32,7 +32,7 @@ void loop() {
   IoTtalk.loop();
   loopLED(ledMatrix);
 
-  if (millis() - cycleTimestamp > 1000) {
+  if (millis() - cycleTimestamp > 300) {
     result = IoTtalk.pull("LEDMatrixOutput");
     if (result != "___NULL_DATA___"){
         Serial.println ("LEDMatrixOutput: "+result);
