@@ -37,17 +37,17 @@ void loop() {
   loopLED(ledMatrix);
 
   if (millis() - cycleTimestamp > 300) {
-    digitalWrite(5,HIGH);// Extra LED
+    // digitalWrite(16,HIGH);// Extra LED
     result = IoTtalk.pull("LEDMatrixOutput");
-    digitalWrite(5,LOW);// Extra LED
+    // digitalWrite(16,LOW);// Extra LED
     if (result != "___NULL_DATA___"){
-        digitalWrite(16,HIGH);// Extra LED
+        digitalWrite(5,HIGH);// Extra LED
         Serial.println ("LEDMatrixOutput: "+result);
         if(result[0]=='\"') {
             result=result.substring(1, result.length()-1);
         }
         Router.exec(result);
-        digitalWrite(16,LOW);// Extra LED
+        digitalWrite(5,LOW);// Extra LED
     }
     cycleTimestamp = millis();
   };

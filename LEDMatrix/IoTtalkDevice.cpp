@@ -291,8 +291,9 @@ int IoTtalkDevice::push(char *df_name, String value){
             // if (switchState) digitalWrite(4,HIGH);
         }
         else delay(3000);
-        digitalWrite(4, LOW);// Extra LED
     }
+    digitalWrite(4, LOW);// Extra LED
+    
     http.end();
     return httpCode;
 }
@@ -313,9 +314,9 @@ String IoTtalkDevice::pull(char *df_name){
             //if (switchState) digitalWrite(4,HIGH);
         }
         else delay(3000);
-        digitalWrite(4, LOW);// Extra LED
-
     }
+    digitalWrite(4, LOW);// Extra LED
+
     String get_ret_str = http.getString();  //After send GET request , store the return string
     //    Serial.println
 
@@ -411,13 +412,13 @@ void IoTtalkDevice::loop() {
 
     if (!LEDhadFlashed){
         digitalWrite(2, 0);
-        digitalWrite(5,HIGH);// Extra LED
+        digitalWrite(16,HIGH);// Extra LED
         LEDhadFlashed = 1;
         LEDonCycle = millis();
     }
 
     if (millis()-LEDonCycle > 1){
       digitalWrite(2, 1);
-      digitalWrite(5, LOW);// Extra LED
+      digitalWrite(16, LOW);// Extra LED
     }
 }
