@@ -36,7 +36,7 @@ void loop() {
   IoTtalk.loop();
   loopLED(ledMatrix);
 
-  if (millis() - cycleTimestamp > 300) {
+  if (millis() - cycleTimestamp > 500) {
     analogWrite(16,10);// Extra LED
     result = IoTtalk.pull("LEDMatrixOutput");
     digitalWrite(16,LOW);// Extra LED

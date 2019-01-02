@@ -361,7 +361,16 @@ String IoTtalkDevice::pull(char *df_name){
         }
         portion = ""; //This portion is used to fetch the data.
         while (get_ret_str[string_index] != ']'&&get_ret_str[string_index] != '\n'){
-            portion += get_ret_str[string_index];
+            if(get_ret_str[string_index]=='\\'&&get_ret_str[string_index+1]=='\\') {
+              portion += '\\';
+            }
+            else if(get_ret_str[string_index]=='\\') {
+              string_index+=1;
+              portion += get_ret_str[string_index];
+            }
+            else {
+              portion += get_ret_str[string_index];
+            }
             string_index+=1;
         }
         return portion;   // return the data.
