@@ -6,5 +6,5 @@
 
 void setupCommandRouter(RegexKeyFunctionMap &Router, LedMatrix& ledMatrix);
 
-void loopLED(long cycleTimestamp, LedMatrix &ledMatrix);
+void loopLED(LedMatrix &ledMatrix);
 #endif

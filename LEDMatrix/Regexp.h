@@ -58,12 +58,15 @@
 // special capture "lengths"
 #define CAP_UNFINISHED	(-1)
 #define CAP_POSITION	(-2)
+#include <Arduino.h>
 
 class MatchState;  // forward definition for the callback routines
-
-typedef void (*GlobalMatchCallback)   (const char * match,          // matching string (not null-terminated)
-                                       const unsigned int length,   // length of matching string
-                                       const MatchState & ms);      // MatchState in use (to get captures)
+typedef std::function<void(const char * match,          // matching string (not null-terminated)
+                           const unsigned int length,   // length of matching string
+                           const MatchState & ms)> GlobalMatchCallback;
+//typedef void (*GlobalMatchCallback)   (const char * match,          // matching string (not null-terminated)
+//                                       const unsigned int length,   // length of matching string
+//                                       const MatchState & ms);      // MatchState in use (to get captures)
 // std::function<double (double, double)>
 
 typedef void (*GlobalReplaceCallback) (const char * match,          // matching string (not null-terminated)

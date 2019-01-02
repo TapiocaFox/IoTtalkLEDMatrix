@@ -6,7 +6,7 @@
 #include "Regexp.h"
 #include <Arduino.h>
 // std::function<*void(std::vector<String>)>
-// typedef void (*std::function<void(std::vector<String>)>)(std::vector<String>);
+typedef std::function<void(std::vector<String>)> test;
 
 class RegexKeyFunctionMap {
   public:

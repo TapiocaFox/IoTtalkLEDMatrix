@@ -1,7 +1,11 @@
 #include "LEDMatrixCommands.h"
+#include <Arduino.h>
 
 int loopMode = 0;
+long LEDcycleTimestamp = millis();
+int LEDInterval = 1000;
 // 0 scrollTextLeft;
+// 1 scrollTextRight;
 
 void usblog(String str) {
   Serial.println(str);
@@ -14,9 +18,22 @@ void setupCommandRouter(RegexKeyFunctionMap &Router, LedMatrix &ledMatrix) {
     // exaple:
     // Router.map(正則表達式, [](std::vector<std::string> matches) {
     //   matches[0]; //  整格字串
-    //   matches[1]; // 第一組 re group
+    //   matches[1]; // 第一組 re groupd
     //   matches[2]; // 第二組 re group, and so on
     // });
+
+    // !bounce "This Text Should be bouncing"
+    Router.map("^[!](setmode|mode)[ ](.*)$", [](std::vector<String> matches) {
+      // c_str for Arduino string compatability
+      usblog("mode set: "+matches[2]);
+//      if(matches[2]=="normal"||matches[2]=="scrollTextLeft"||matches[2]=="scrollLeft") {
+//
+//      }
+//      else if() {
+//
+//      }
+      // return 0;
+    });
 
     // !bounce "This Text Should be bouncing"
     Router.map("^[!](bounce|bouncetext)[ ](.*)$", [](std::vector<String> matches) {
@@ -41,13 +58,22 @@ void setupCommandRouter(RegexKeyFunctionMap &Router, LedMatrix &ledMatrix) {
     /// *************** setup command end ********************
 }
 
-void loopLED(long cycleTimestamp, LedMatrix &ledMatrix) {
+void loopLED(LedMatrix &ledMatrix) {
   if(loopMode == 0) {
-    if (millis() - cycleTimestamp > 200) {
+    if (millis() - LEDcycleTimestamp > LEDInterval) {
         ledMatrix.clear();
         ledMatrix.scrollTextLeft();
         ledMatrix.drawText();
         ledMatrix.commit(); // commit transfers the byte buffer to the displays
+    };
+  }
+  else if(loopMode == 1) {
+    if (millis() - LEDcycleTimestamp > LEDInterval) {
+        ledMatrix.clear();
+        ledMatrix.scrollTextRight();
+        ledMatrix.drawText();
+        ledMatrix.commit(); // commit transfers the byte buffer to the displays
+        LEDcycleTimestamp = millis();
     };
   }
 }

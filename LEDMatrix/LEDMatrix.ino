@@ -20,7 +20,7 @@ void setup() {
     ledMatrix.setIntensity(4); // range is 0-15
     ledMatrix.setText("MAX7219");
     setupCommandRouter(Router, ledMatrix);
-    
+
     String DFs[] = {"LEDMatrixOutput"};
     IoTtalk.setDeviceModelName("LEDMatrix");
     IoTtalk.setDeviceFeatures(DFs, 1);
@@ -30,7 +30,7 @@ void setup() {
 void loop() {
   String result;
   IoTtalk.loop();
-  loopLED(cycleTimestamp, ledMatrix);
+  loopLED(ledMatrix);
 
   if (millis() - cycleTimestamp > 1000) {
     result = IoTtalk.pull("LEDMatrixOutput");
@@ -38,5 +38,6 @@ void loop() {
         Serial.println ("LEDMatrixOutput: "+result);
         Router.exec(result);
     }
+    cycleTimestamp = millis();
   };
 };
