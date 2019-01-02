@@ -65,6 +65,8 @@ void loopLED(LedMatrix &ledMatrix) {
         ledMatrix.scrollTextLeft();
         ledMatrix.drawText();
         ledMatrix.commit(); // commit transfers the byte buffer to the displays
+        LEDcycleTimestamp = millis();
+
     };
   }
   else if(loopMode == 1) {
@@ -73,7 +75,8 @@ void loopLED(LedMatrix &ledMatrix) {
         ledMatrix.scrollTextRight();
         ledMatrix.drawText();
         ledMatrix.commit(); // commit transfers the byte buffer to the displays
+        LEDcycleTimestamp = millis();
+
     };
   }
-  LEDcycleTimestamp = millis();
 }
