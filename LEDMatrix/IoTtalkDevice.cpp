@@ -293,7 +293,7 @@ int IoTtalkDevice::push(char *df_name, String value){
         else delay(3000);
     }
     digitalWrite(4, LOW);// Extra LED
-    
+
     http.end();
     return httpCode;
 }
@@ -324,6 +324,9 @@ String IoTtalkDevice::pull(char *df_name){
     http.end();
 
 //    get_ret_str = removeWhiteSpace(get_ret_str);
+    if(get_ret_str.length()<5) {
+      return "___NULL_DATA___";
+    }
     int string_index = 0;
     string_index = get_ret_str.indexOf("[", string_index);
     String portion = "";  //This portion is used to fetch the timestamp.
