@@ -4,6 +4,7 @@
 int Mode = 1;
 long LEDcycleTimestamp = millis();
 int LEDInterval = 100;
+String PlainText;
 // 0 scrollTextLeft;
 // 1 scrollTextRight;
 
@@ -35,6 +36,7 @@ void setupCommandRouter(RegexKeyFunctionMap &Router, LedMatrix &ledMatrix) {
        Mode=2;
      }
      else if(matches[1]=="stillRight"||matches[1]=="right"||matches[1]=="Right") {
+       ledMatrix.setText(PlainText);
        ledMatrix.clear();
        ledMatrix.setTextAlignment(2);
        ledMatrix.drawText();
@@ -42,6 +44,7 @@ void setupCommandRouter(RegexKeyFunctionMap &Router, LedMatrix &ledMatrix) {
        Mode=3;
      }
      else if(matches[1]=="stillLeft"||matches[1]=="left"||matches[1]=="Left") {
+       ledMatrix.setText(PlainText);
        ledMatrix.clear();
        ledMatrix.setTextAlignment(0);
        ledMatrix.drawText();
@@ -80,6 +83,7 @@ void setupCommandRouter(RegexKeyFunctionMap &Router, LedMatrix &ledMatrix) {
     Router.map("^[^!](.*)$", [&ledMatrix](std::vector<String> matches) {
       usblog("Plain text: "+matches[0]);
       ledMatrix.setText(matches[0]);
+      PlainText = matches[0];
       if(Mode == 1) {
         ledMatrix.clear();
         ledMatrix.setTextAlignment(1);
