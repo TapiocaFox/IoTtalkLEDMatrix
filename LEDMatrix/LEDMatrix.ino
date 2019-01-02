@@ -36,6 +36,9 @@ void loop() {
     result = IoTtalk.pull("LEDMatrixOutput");
     if (result != "___NULL_DATA___"){
         Serial.println ("LEDMatrixOutput: "+result);
+        if(result[0]=='\"') {
+            result=result.substring(1, result.length()-1);
+        }
         Router.exec(result);
     }
     cycleTimestamp = millis();

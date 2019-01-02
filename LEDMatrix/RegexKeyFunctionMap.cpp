@@ -28,7 +28,7 @@ void RegexKeyFunctionMap::exec(String plain) {
   MatchState ms (buff);
   for(auto it=regexmap.begin(); it!=regexmap.end(); it++) {
     operating_function = it->second;
-    // Serial.println (plain+' '+it->first);
+    Serial.println (plain+' '+it->first);
     int count = ms.GlobalMatch ((it->first).c_str(), [](const char * match,          // matching string (not null-terminated)
       const unsigned int length,   // length of matching string
       const MatchState & ms) {
@@ -42,6 +42,7 @@ void RegexKeyFunctionMap::exec(String plain) {
          }  // end of for each capture
          operating_function(result_vector);
     });
+    Serial.println(count);
     // std::smatch matches;
     // std::regex re(it->first);
     // if(std::regex_search(plain, matches, re)) {

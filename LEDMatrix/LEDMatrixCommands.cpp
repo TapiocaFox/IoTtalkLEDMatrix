@@ -3,7 +3,7 @@
 
 int loopMode = 0;
 long LEDcycleTimestamp = millis();
-int LEDInterval = 1000;
+int LEDInterval = 500;
 // 0 scrollTextLeft;
 // 1 scrollTextRight;
 
@@ -23,22 +23,22 @@ void setupCommandRouter(RegexKeyFunctionMap &Router, LedMatrix &ledMatrix) {
     // });
 
     // !bounce "This Text Should be bouncing"
-    Router.map("^[!](setmode|mode)[ ](.*)$", [](std::vector<String> matches) {
+    Router.map("^!mode[ ](.*)$", [](std::vector<String> matches) {
       // c_str for Arduino string compatability
-      usblog("mode set: "+matches[2]);
-//      if(matches[2]=="normal"||matches[2]=="scrollTextLeft"||matches[2]=="scrollLeft") {
-//
-//      }
-//      else if() {
-//
-//      }
+      usblog("mode set: "+matches[1]);
+     if(matches[1]=="normal"||matches[1]=="scrollTextLeft"||matches[1]=="scrollLeft") {
+       loopMode =0;
+     }
+     else if(matches[1]=="scrollTextRight"||matches[1]=="scrollRight") {
+       loopMode=1;
+     }
       // return 0;
     });
 
-    // !bounce "This Text Should be bouncing"
-    Router.map("^[!](bounce|bouncetext)[ ](.*)$", [](std::vector<String> matches) {
+    Router.map("^!interval (.*)$", [](std::vector<String> matches) {
       // c_str for Arduino string compatability
-      usblog("Bouncing text: "+matches[2]);
+      usblog("interval set: "+matches[1]);
+      LEDInterval = matches[1].toInt();
       // return 0;
     });
 
@@ -47,13 +47,13 @@ void setupCommandRouter(RegexKeyFunctionMap &Router, LedMatrix &ledMatrix) {
       ledMatrix.setText(matches[0]);
     });
 
-    Router.map("^(.*)[.](.*)$", [](std::vector<String> matches) {
-      usblog("Dot text(full): "+matches[0]);
-      usblog("Dot text(int): "+matches[1]);
-      usblog("Dot text(float): "+matches[2]);
-
-      // return 0;
-    });
+    // Router.map("^(.*)[.](.*)$", [](std::vector<String> matches) {
+    //   usblog("Dot text(full): "+matches[0]);
+    //   usblog("Dot text(int): "+matches[1]);
+    //   usblog("Dot text(float): "+matches[2]);
+    //
+    //   // return 0;
+    // });
 
     /// *************** setup command end ********************
 }
@@ -73,7 +73,7 @@ void loopLED(LedMatrix &ledMatrix) {
         ledMatrix.scrollTextRight();
         ledMatrix.drawText();
         ledMatrix.commit(); // commit transfers the byte buffer to the displays
-        LEDcycleTimestamp = millis();
     };
   }
+  LEDcycleTimestamp = millis();
 }
