@@ -3,7 +3,7 @@
 
 int Mode = 1;
 long LEDcycleTimestamp = millis();
-int LEDInterval = 100;
+int LEDInterval = 50;
 String PlainText;
 // 0 scrollTextLeft;
 // 1 scrollTextRight;
@@ -13,7 +13,7 @@ void usblog(String str) {
 }
 
 void setupCommandRouter(RegexKeyFunctionMap &Router, LedMatrix &ledMatrix) {
-    
+
     /// 大家要在這裡完成各種功能！！！
     /// *************** setup command here!!!! ***************
     // exaple:

@@ -21,7 +21,7 @@ void setup() {
     pinMode(4, OUTPUT); // D2~
 
     ledMatrix.init();
-    ledMatrix.setIntensity(4); // range is 0-15
+    ledMatrix.setIntensity(2); // range is 0-15
     ledMatrix.setText("MAX7219 LEDMatrix");
     setupCommandRouter(Router, ledMatrix);
 
