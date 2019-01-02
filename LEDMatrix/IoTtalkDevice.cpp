@@ -283,7 +283,7 @@ int IoTtalkDevice::push(char *df_name, String value){
     int httpCode = http.PUT(data);
     if (httpCode != 200) Serial.println("[HTTP] PUSH \"" + String(df_name) + "\"... code: " + (String)httpCode + ", retry to register.");
     while (httpCode != 200){
-        digitalWrite(4, LOW);
+        digitalWrite(4, HIGH);
         digitalWrite(2, HIGH);
         httpCode = registerIoTtalk();
         if (httpCode == 200){
@@ -291,6 +291,7 @@ int IoTtalkDevice::push(char *df_name, String value){
             // if (switchState) digitalWrite(4,HIGH);
         }
         else delay(3000);
+        digitalWrite(4, LOW);// Extra LED
     }
     http.end();
     return httpCode;
@@ -304,14 +305,16 @@ String IoTtalkDevice::pull(char *df_name){
 
     if (httpCode != 200) Serial.println("[HTTP] "+DeviceURL + String(df_name)+" PULL \"" + String(df_name) + "\"... code: " + (String)httpCode + ", retry to register.");
     while (httpCode != 200){
-        digitalWrite(4, LOW);
         digitalWrite(2, HIGH);
+        digitalWrite(4, HIGH);// Extra LED
         httpCode = registerIoTtalk();
         if (httpCode == 200){
             http.GET();
             //if (switchState) digitalWrite(4,HIGH);
         }
         else delay(3000);
+        digitalWrite(4, LOW);// Extra LED
+
     }
     String get_ret_str = http.getString();  //After send GET request , store the return string
     //    Serial.println
@@ -401,16 +404,20 @@ void IoTtalkDevice::initialize() {
 void IoTtalkDevice::loop() {
     if (digitalRead(0) == LOW) clearEEPROM();
 
-    if (millis() - LEDflashCycle > 2000){
+    if (millis() - LEDflashCycle > 5000){
         LEDhadFlashed = 0;
         LEDflashCycle = millis();
     }
 
     if (!LEDhadFlashed){
         digitalWrite(2, 0);
+        digitalWrite(5,HIGH);// Extra LED
         LEDhadFlashed = 1;
         LEDonCycle = millis();
     }
 
-    if (millis()-LEDonCycle > 1) digitalWrite(2, 1);
+    if (millis()-LEDonCycle > 1){
+      digitalWrite(2, 1);
+      digitalWrite(5, LOW);// Extra LED
+    }
 }

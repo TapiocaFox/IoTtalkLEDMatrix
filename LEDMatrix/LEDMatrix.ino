@@ -16,6 +16,10 @@ IoTtalkDevice IoTtalk;
 void setup() {
     Serial.begin(115200);
 
+    pinMode(16, OUTPUT);// D0~
+    pinMode(5, OUTPUT); // D1~
+    pinMode(4, OUTPUT); // D2~
+
     ledMatrix.init();
     ledMatrix.setIntensity(4); // range is 0-15
     ledMatrix.setText("MAX7219 LEDMatrix");
@@ -33,13 +37,17 @@ void loop() {
   loopLED(ledMatrix);
 
   if (millis() - cycleTimestamp > 300) {
+    digitalWrite(5,HIGH);// Extra LED
     result = IoTtalk.pull("LEDMatrixOutput");
+    digitalWrite(5,LOW);// Extra LED
     if (result != "___NULL_DATA___"){
+        digitalWrite(16,HIGH);// Extra LED
         Serial.println ("LEDMatrixOutput: "+result);
         if(result[0]=='\"') {
             result=result.substring(1, result.length()-1);
         }
         Router.exec(result);
+        digitalWrite(16,LOW);// Extra LED
     }
     cycleTimestamp = millis();
   };
