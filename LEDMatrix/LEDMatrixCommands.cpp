@@ -114,7 +114,34 @@ void setupCommandRouter(RegexKeyFunctionMap &Router, LedMatrix &ledMatrix) {
 
     Router.map("^!text (.*)$", [&ledMatrix](std::vector<String> matches) {
       usblog("set text: "+matches[1]);
-      ledMatrix.setText(matches[1]);
+      ledMatrix.setText(matches[0]);
+      PlainText = matches[0];
+      if(Mode == 1) {
+        ledMatrix.clear();
+        ledMatrix.setTextAlignment(1);
+        ledMatrix.drawText();
+        ledMatrix.commit();
+      }
+      else if(Mode == 2) {
+        ledMatrix.clear();
+        ledMatrix.setTextAlignment(3);
+        ledMatrix.drawText();
+        ledMatrix.commit();
+      }
+      else if(Mode == 3) {
+        ledMatrix.clear();
+        ledMatrix.setTextAlignment(2);
+        ledMatrix.drawText();
+        ledMatrix.commit();
+      }
+      else if(Mode == 4) {
+        ledMatrix.clear();
+        ledMatrix.setTextAlignment(0);
+        ledMatrix.drawText();
+        ledMatrix.commit();
+      }
+      else if(Mode == 5) {
+      }
     });
 
     // Router.map("^(.*)[.](.*)$", [](std::vector<String> matches) {
