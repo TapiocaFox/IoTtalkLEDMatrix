@@ -1,7 +1,7 @@
 #include "LEDMatrixCommands.h"
 #include <Arduino.h>
 
-int loopMode = 1;
+int Mode = 1;
 long LEDcycleTimestamp = millis();
 int LEDInterval = 100;
 // 0 scrollTextLeft;
@@ -28,23 +28,29 @@ void setupCommandRouter(RegexKeyFunctionMap &Router, LedMatrix &ledMatrix) {
       usblog("mode set: "+matches[1]);
      if(matches[1]=="normal"||matches[1]=="scrollTextLeft"||matches[1]=="scrollLeft") {
        ledMatrix.setTextAlignment(1);
-       loopMode =1;
+       Mode =1;
      }
      else if(matches[1]=="scrollTextRight"||matches[1]=="scrollRight") {
        ledMatrix.setTextAlignment(3);
-       loopMode=2;
+       Mode=2;
      }
      else if(matches[1]=="stillRight"||matches[1]=="right"||matches[1]=="Right") {
-       ledMatrix.setTextAlignment(3);
-       loopMode=0;
+       ledMatrix.clear();
+       ledMatrix.setTextAlignment(2);
+       ledMatrix.drawText();
+       ledMatrix.commit();
+       Mode=3;
      }
      else if(matches[1]=="stillLeft"||matches[1]=="left"||matches[1]=="Left") {
-       ledMatrix.setTextAlignment(1);
-       loopMode=0;
+       ledMatrix.clear();
+       ledMatrix.setTextAlignment(0);
+       ledMatrix.drawText();
+       ledMatrix.commit();
+       Mode=4;
      }
      else if(matches[1]=="oscillate"||matches[1]=="vibrate"||matches[1]=="shake") {
        ledMatrix.setTextAlignment(1);
-       loopMode=3;
+       Mode=5;
      }
       // return 0;
     });
@@ -74,6 +80,32 @@ void setupCommandRouter(RegexKeyFunctionMap &Router, LedMatrix &ledMatrix) {
     Router.map("^[^!](.*)$", [&ledMatrix](std::vector<String> matches) {
       usblog("Plain text: "+matches[0]);
       ledMatrix.setText(matches[0]);
+      if(Mode == 1) {
+        ledMatrix.clear();
+        ledMatrix.setTextAlignment(1);
+        ledMatrix.drawText();
+        ledMatrix.commit();
+      }
+      else if(Mode == 2) {
+        ledMatrix.clear();
+        ledMatrix.setTextAlignment(3);
+        ledMatrix.drawText();
+        ledMatrix.commit();
+      }
+      else if(Mode == 3) {
+        ledMatrix.clear();
+        ledMatrix.setTextAlignment(2);
+        ledMatrix.drawText();
+        ledMatrix.commit();
+      }
+      else if(Mode == 4) {
+        ledMatrix.clear();
+        ledMatrix.setTextAlignment(0);
+        ledMatrix.drawText();
+        ledMatrix.commit();
+      }
+      else if(Mode == 5) {
+      }
     });
 
     Router.map("^!text (.*)$", [&ledMatrix](std::vector<String> matches) {
@@ -93,7 +125,7 @@ void setupCommandRouter(RegexKeyFunctionMap &Router, LedMatrix &ledMatrix) {
 }
 
 void loopLED(LedMatrix &ledMatrix) {
-  if(loopMode == 1) {
+  if(Mode == 1) {
     if (millis() - LEDcycleTimestamp > LEDInterval) {
         ledMatrix.clear();
         ledMatrix.scrollTextLeft();
@@ -103,7 +135,7 @@ void loopLED(LedMatrix &ledMatrix) {
 
     };
   }
-  else if(loopMode == 2) {
+  else if(Mode == 2) {
     if (millis() - LEDcycleTimestamp > LEDInterval) {
         ledMatrix.clear();
         ledMatrix.scrollTextRight();
@@ -113,7 +145,7 @@ void loopLED(LedMatrix &ledMatrix) {
 
     };
   }
-  else if(loopMode == 3) {
+  else if(Mode == 5) {
     if (millis() - LEDcycleTimestamp > LEDInterval) {
         ledMatrix.clear();
         ledMatrix.oscillateText();
