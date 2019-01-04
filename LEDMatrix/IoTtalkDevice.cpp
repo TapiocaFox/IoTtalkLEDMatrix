@@ -416,7 +416,7 @@ void IoTtalkDevice::initialize() {
             delay(3000);
         }
     }
-    
+
     digitalWrite(16, LOW);
 
 

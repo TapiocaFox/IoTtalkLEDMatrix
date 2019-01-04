@@ -28,6 +28,11 @@ void LedMatrix::init() {
         sendByte (device, MAX7219_REG_INTENSITY, 0);   // character intensity: range: 0 to 15
         sendByte (device, MAX7219_REG_SHUTDOWN, 1);    // not in shutdown mode (ie. start it up)
     }
+    setText("ok..");
+    clear();
+    setTextAlignment(0);
+    drawText();
+    commit();
 }
 
 void LedMatrix::sendByte (const byte device, const byte reg, const byte data) {
