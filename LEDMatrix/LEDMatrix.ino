@@ -25,6 +25,7 @@ void setup() {
     setupCommandRouter(Router, ledMatrix);
 
     onWIFIFailed([&ledMatrix]() {
+      digitalWrite(16, LOW);// Extra LED
       digitalWrite(4, HIGH);
       ledMatrix.setText("WIFI");
       ledMatrix.clear();
