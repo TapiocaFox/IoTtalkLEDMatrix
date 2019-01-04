@@ -4,6 +4,7 @@
 
 #include "ESP8266HTTPClient2.h"
 
+void onWIFIFailed(std::function<void()>);
 class IoTtalkDevice {
   public:
     // IoTtalkDevice() : () { }

@@ -8,7 +8,6 @@
 #define NUMBER_OF_DEVICES 4
 #define CS_PIN 0
 LedMatrix ledMatrix = LedMatrix(NUMBER_OF_DEVICES, CS_PIN);
-
 long cycleTimestamp = millis();
 RegexKeyFunctionMap Router;
 IoTtalkDevice IoTtalk;
@@ -25,6 +24,14 @@ void setup() {
     ledMatrix.setText("MAX7219 LEDMatrix");
     setupCommandRouter(Router, ledMatrix);
 
+    onWIFIFailed([&ledMatrix]() {
+      digitalWrite(4, HIGH);
+      ledMatrix.setText("WIFI");
+      ledMatrix.clear();
+      ledMatrix.setTextAlignment(0);
+      ledMatrix.drawText();
+      ledMatrix.commit();
+    });
     String DFs[] = {"LEDMatrixOutput"};
     IoTtalk.setDeviceModelName("LEDMatrix");
     IoTtalk.setDeviceFeatures(DFs, 1);

@@ -7,6 +7,9 @@
 #define DefaultIoTtalkServerIP "140.113.199.189"
 int n_of_DF;
 
+std::function<void()> WIFIFailedCallback;
+
+
 char IoTtalkServerIP[100] = "";
 uint8_t isInWiFiMode = 1;
 // HTTPClient::HTTPClient() {
@@ -14,6 +17,10 @@ uint8_t isInWiFiMode = 1;
 // }
 ESP8266WebServer HttpServer;
 void setupWifiandIoTtalk();
+
+void onWIFIFailed(std::function<void()> f) {
+    WIFIFailedCallback = f;
+}
 
 void IoTtalkDevice::setDeviceModelName(const String& str) {
     DM_name = str;
@@ -186,6 +193,7 @@ void saveInfoAndConnectToWiFi() {
 }
 
 void startWebServer(void){
+    if(WIFIFailedCallback) WIFIFailedCallback();
     HttpServer.on ( "/", [](){handleRoot(0);} );
     HttpServer.on ( "/setup", saveInfoAndConnectToWiFi);
     HttpServer.onNotFound ( handleNotFound );
@@ -379,6 +387,8 @@ void IoTtalkDevice::initialize() {
     EEPROM.begin(512);
     Serial.begin(115200);
     pinMode(2, OUTPUT);
+    digitalWrite(4, LOW);// Extra LED
+    digitalWrite(16, HIGH);
 
     char wifissid[100]="";
     char wifipass[100]="";
@@ -406,6 +416,9 @@ void IoTtalkDevice::initialize() {
             delay(3000);
         }
     }
+    
+    digitalWrite(16, LOW);
+
 
     initDeviceFeaturesTimestamp();
 }
