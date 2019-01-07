@@ -1,0 +1,7 @@
+linebot:姵婷
+ardunio:陳曄
+weather:偉哲
+ledmanager:柏佑 陳曄
+ppt:佩婷
+
+分工比例各25%

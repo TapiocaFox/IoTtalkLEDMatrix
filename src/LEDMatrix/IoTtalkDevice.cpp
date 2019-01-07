@@ -202,7 +202,7 @@ void startWebServer(void){
 
 
 void setupWifiandIoTtalk(void){
-    String softapname = "MCU-";
+    String softapname = "LEDMatrix-";
     uint8_t MAC_array[6];
     WiFi.macAddress(MAC_array);
     for (int i=0;i<6;i++){
@@ -416,7 +416,7 @@ void IoTtalkDevice::initialize() {
             delay(3000);
         }
     }
-    
+
     digitalWrite(16, LOW);
 
 

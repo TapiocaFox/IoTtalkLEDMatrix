@@ -3,7 +3,7 @@
 
 int Mode = 1;
 long LEDcycleTimestamp = millis();
-int LEDInterval = 50;
+int LEDInterval = 20;
 String PlainText;
 // 0 scrollTextLeft;
 // 1 scrollTextRight;

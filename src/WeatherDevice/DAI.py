@@ -9,7 +9,7 @@ Reg_addr = None #if None, Reg_addr = MAC address
 
 DAN.profile['dm_name']='weather'
 DAN.profile['df_list']=['weather-i', 'weather-o']
-DAN.profile['d_name']= 'test' # None for autoNaming
+DAN.profile['d_name']= None # None for autoNaming
 DAN.device_registration_with_retry(ServerURL, Reg_addr)
 
 ####################################################################
@@ -84,8 +84,8 @@ while True:
                         if len(row.find_all('td')) == 16:
                             loc = row.find_all('td')[1].find('a').text
                             if (loc in Cord)and(loc==target):
-                                print(str([Cord[loc]['eng'],row.find_all('td')[3].text,(row.find_all('td')[7].text)[0:len(row.find_all('td')[7].text)-1],row.find_all('td')[12].text,row.find_all('td')[14].text]))
-                                DAN.push('weather-i',str([Cord[loc]['eng'],row.find_all('td')[3].text,(row.find_all('td')[7].text)[0:len(row.find_all('td')[7].text)-1],row.find_all('td')[12].text,row.find_all('td')[14].text]))
+                                print(Cord[loc]['eng']+" temp:"+row.find_all('td')[3].text+" wind:"+(row.find_all('td')[7].text)[0:len(row.find_all('td')[7].text)-1]+" humidity:"+row.find_all('td')[12].text+" rainfall:"+row.find_all('td')[14].text)
+                                DAN.push('weather-i',Cord[loc]['eng']+" temp:"+row.find_all('td')[3].text+" wind:"+(row.find_all('td')[7].text)[0:len(row.find_all('td')[7].text)-1]+" humidity:"+row.find_all('td')[12].text+" rainfall:"+row.find_all('td')[14].text)
 	
     #Push data to a device feature called "Dummy_Sensor"
        # test = input("instruction: ")

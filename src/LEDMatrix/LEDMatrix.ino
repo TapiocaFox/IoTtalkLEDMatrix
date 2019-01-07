@@ -20,8 +20,7 @@ void setup() {
     pinMode(4, OUTPUT); // D2~
 
     ledMatrix.init();
-    ledMatrix.setIntensity(2); // range is 0-15
-    ledMatrix.setText("MAX7219 LEDMatrix");
+    ledMatrix.setIntensity(0); // range is 0-15
     setupCommandRouter(Router, ledMatrix);
 
     onWIFIFailed([&ledMatrix]() {
@@ -37,6 +36,8 @@ void setup() {
     IoTtalk.setDeviceModelName("LEDMatrix");
     IoTtalk.setDeviceFeatures(DFs, 1);
     IoTtalk.initialize();
+    ledMatrix.setText("LEDMatrix has connected to IoTtalk.");
+    ledMatrix.setTextAlignment(1);
 };
 
 void loop() {
